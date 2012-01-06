@@ -1,0 +1,16 @@
+giflib (4.1.6-6slp6) unstable; urgency=low
+
+  * Update changelog
+  * Git: unmodified/giflib
+  * Tag: giflib_4.1.6-6slp6
+
+ -- yhkim <yh8004.kim@samsung.com>  Fri, 23 Dec 2011 18:10:35 +0900
+
+giflib (4.1.6-6slp5) unstable; urgency=low
+
+  * Git Init
+  * Git: unmodified/giflib
+  * Tag: giflib_4.1.6-6slp5
+
+ -- YoungHun Kim <yh8004.kim@samsung.com>  Wed, 06 Dec 2011 13:20:15 +0200
+
