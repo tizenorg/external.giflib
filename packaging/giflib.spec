@@ -4,10 +4,13 @@ Version: 4.1.6
 Release: 9
 License: MIT
 URL: http://sourceforge.net/projects/giflib/
-Source0: http://downloads.sourceforge.net/giflib/giflib-%{version}.tar.bz2
+Source0: http://downloads.sourceforge.net/giflib/%{name}-%{version}.tar.gz
 Group: System/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: libX11-devel, libICE-devel, libSM-devel, libXt-devel
+BuildRequires: pkgconfig(x11)
+BuildRequires: pkgconfig(ice)
+BuildRequires: pkgconfig(sm)
+BuildRequires: pkgconfig(xv)
 
 Obsoletes: libungif <= %{version}-%{release}
 Provides: libungif <= %{version}-%{release}
