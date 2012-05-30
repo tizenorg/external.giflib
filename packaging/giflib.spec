@@ -5,6 +5,7 @@ Release: 9
 License: MIT
 URL: http://sourceforge.net/projects/giflib/
 Source0: http://downloads.sourceforge.net/giflib/%{name}-%{version}.tar.gz
+Source1001: packaging/giflib.manifest 
 Group: System/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: pkgconfig(x11)
@@ -58,6 +59,7 @@ You'll also need to install the giflib package.
 %setup -q
 
 %build
+cp %{SOURCE1001} .
 %configure
 make %{?_smp_mflags} all
 
@@ -82,12 +84,15 @@ rm -rf ${RPM_BUILD_ROOT}
 %postun -p /sbin/ldconfig
 
 %files 
+%manifest giflib.manifest
 %{_libdir}/lib*.so.*
 
 %files devel
+%manifest giflib.manifest
 %{_libdir}/lib*.so
 %{_includedir}/*.h
 
 %files utils
+%manifest giflib.manifest
 %{_bindir}/*
 
