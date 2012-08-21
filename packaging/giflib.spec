@@ -1,3 +1,4 @@
+#sbs-git:slp/unmodified/giflib giflib 4.1.6 61596465721e29cdfae7e6237b2a148e04006a6c
 Summary: Library for manipulating GIF format image files
 Name: giflib
 Version: 4.1.6
@@ -90,4 +91,3 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files utils
 %{_bindir}/*
-
