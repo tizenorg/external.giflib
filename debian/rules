@@ -1,0 +1,97 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+include /usr/share/dpatch/dpatch.make
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+CFLAGS = -Wall -g -fPIC
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+
+config.status: configure patch
+	dh_testdir
+
+	# Configure package
+	CFLAGS="$(CFLAGS)" ./configure --prefix=/usr --mandir=\$${prefix}/share/man
+
+build: build-stamp
+build-stamp: config.status
+	dh_testdir
+
+	# Building package
+	$(MAKE)
+
+	touch build-stamp
+
+clean: unpatch
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+
+	# Cleaning package
+	[ ! -f Makefile ] || $(MAKE) distclean
+ifneq "$(wildcard /usr/share/misc/config.sub)" ""
+	cp -f /usr/share/misc/config.sub config.sub
+endif
+ifneq "$(wildcard /usr/share/misc/config.guess)" ""
+	cp -f /usr/share/misc/config.guess config.guess
+endif
+
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	# Installing package
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+
+	# Installing documentation
+	mkdir -p debian/giflib-tools/usr/share/doc/giflib-tools/html
+	cp -a doc/*.txt debian/giflib-tools/usr/share/doc/giflib-tools/
+	cp -a doc/*.html debian/giflib-tools/usr/share/doc/giflib-tools/html
+
+	# Adding legacy links for libungif4g
+	mkdir -p debian/libgif4/usr/lib
+	ln -s libgif.so.4.1.6 debian/libgif4/usr/lib/libungif.so.4
+	ln -s libgif.so.4.1.6 debian/libgif4/usr/lib/libungif.so.4.1.6
+
+	# Adding legacy links for libungif4-dev
+	mkdir -p debian/libgif-dev/usr/lib
+	ln -s libgif.a debian/libgif-dev/usr/lib/libungif.a
+	ln -s libgif.la debian/libgif-dev/usr/lib/libungif.la
+	ln -s libgif.so.4.1.6 debian/libgif-dev/usr/lib/libungif.so
+
+binary-indep: build install
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs ChangeLog
+	dh_installdocs
+	dh_install --fail-missing --sourcedir=debian/tmp
+	dh_link
+	dh_strip --dbg-package=giflib-dbg
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install
