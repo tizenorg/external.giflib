@@ -2,16 +2,13 @@
 Summary: Library for manipulating GIF format image files
 Name: giflib
 Version: 4.1.6
-Release: 9
+Release: 15
 License: MIT
 URL: http://sourceforge.net/projects/giflib/
 Source0: http://downloads.sourceforge.net/giflib/%{name}-%{version}.tar.gz
 Group: System/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: pkgconfig(x11)
-BuildRequires: pkgconfig(ice)
-BuildRequires: pkgconfig(sm)
-BuildRequires: pkgconfig(xv)
 
 Obsoletes: libungif <= %{version}-%{release}
 Provides: libungif <= %{version}-%{release}
@@ -68,8 +65,11 @@ MAJOR=`echo '%{version}' | sed 's/\([0-9]\+\)\..*/\1/'`
 %install
 rm -rf ${RPM_BUILD_ROOT}
 
-%make_install
 
+%make_install
+mkdir -p %{buildroot}/usr/share/license
+cp COPYING %{buildroot}/usr/share/license/%{name}
+strip libungif.so.%{version}
 install -m 0755 -p libungif.so.%{version} $RPM_BUILD_ROOT%{_libdir}
 ln -sf libungif.so.%{version} ${RPM_BUILD_ROOT}%{_libdir}/libungif.so.4
 ln -sf libungif.so.4 ${RPM_BUILD_ROOT}%{_libdir}/libungif.so
@@ -82,7 +82,9 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %postun -p /sbin/ldconfig
 
-%files 
+%files
+/usr/share/license/%{name}
+%manifest giflib.manifest
 %{_libdir}/lib*.so.*
 
 %files devel
